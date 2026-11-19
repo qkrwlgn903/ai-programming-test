@@ -5,38 +5,38 @@ from load_scores import load_scores
 BASE_DIR = Path(__file__).resolve().parent
 
 
-def test_?뺤긽_?뚯씪???쎈뒗??):
+def test_정상_파일을_읽는다():
     kept, skipped = load_scores(str(BASE_DIR / "scores.csv"))
     assert len(kept) == 5
 
 
-def test_鍮?以꾩?_嫄대꼫?대떎(tmp_path):
+def test_빈_줄은_건너뛴다(tmp_path):
     csv_file = tmp_path / "blank_lines.csv"
     csv_file.write_text(
-        "name,score\n\n源?섎굹,88\n\n?대몮,92\n\n",
+        "name,score\n\n김하나,88\n\n이둘,92\n\n",
         encoding="utf-8",
     )
     kept, skipped = load_scores(str(csv_file))
     assert len(kept) == 2
 
 
-def test_?대쫫???쇳몴媛_?덉뼱???쎈뒗??tmp_path):
+def test_이름에_쉼표가_있어도_읽는다(tmp_path):
     csv_file = tmp_path / "comma_name.csv"
     csv_file.write_text(
-        'name,score\n"??湲몃룞",90\n',
+        'name,score\n"홍,길동",90\n',
         encoding="utf-8",
     )
     kept, skipped = load_scores(str(csv_file))
     assert len(kept) == 1
-    assert kept[0][0] == "??湲몃룞"
+    assert kept[0][0] == "홍,길동"
 
 
-def test_?녿뒗_?뚯씪?대㈃_?ㅻ쪟媛_?쒕떎():
+def test_없는_파일이면_오류가_난다():
     with pytest.raises(FileNotFoundError):
-        load_scores(str(BASE_DIR / "?녿뒗?뚯씪.csv"))
+        load_scores(str(BASE_DIR / "없는파일.csv"))
 
 
-def test_?ㅻ뜑留??덉쑝硫?鍮?寃곌낵():
+def test_헤더만_있으면_빈_결과():
     kept, skipped = load_scores(str(BASE_DIR / "empty.csv"))
     assert kept == []
     assert skipped == []
@@ -53,19 +53,19 @@ def test_?ㅻ뜑留??덉쑝硫?鍮?寃곌낵():
         (101, False),
     ],
 )
-def test_?먯닔_寃쎄퀎媛?tmp_path, score, expected_valid):
+def test_점수_경계값(tmp_path, score, expected_valid):
     csv_file = tmp_path / f"boundary_{score}.csv"
     csv_file.write_text(
-        f"name,score\n?뚯뒪?명븰??{score}\n",
+        f"name,score\n테스트학생,{score}\n",
         encoding="utf-8",
     )
     kept, skipped = load_scores(str(csv_file))
     assert (len(kept) == 1) is expected_valid
 
-def test_?섎せ???먯닔_?됱?_嫄대꼫?대떎(tmp_path):
+def test_잘못된_점수_행은_건너뛴다(tmp_path):
     csv_file = tmp_path / "invalid_score.csv"
     csv_file.write_text(
-        "name,score\n?뺤긽?숈깮,80\n遺덈웾?숈깮,abc\n",
+        "name,score\n정상학생,80\n불량학생,abc\n",
         encoding="utf-8",
     )
     kept, skipped = load_scores(str(csv_file))
