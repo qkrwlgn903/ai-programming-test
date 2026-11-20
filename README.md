@@ -80,3 +80,4 @@ FAILED test_bug3_logic.py::test_count_pass_uses_default_cutoff_of_60 - assert 1 
 <!-- 저장소를 만들 때 고른 라이선스를 적으세요. 없으면 아무도 이 코드를 쓸 수 없습니다. -->
 
 MIT License (LICENSE 파일 참고)
+#asdfadsf
